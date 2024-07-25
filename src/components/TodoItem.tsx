@@ -4,11 +4,16 @@ import type { Todo } from "../App";
 interface Props {
   todo: Todo;
   onUpdate: (id: number) => void;
+  onDelete: (id: number) => void;
 }
 
-const TodoItem = ({ todo, onUpdate }: Props) => {
+const TodoItem = ({ todo, onUpdate, onDelete }: Props) => {
   const onChangeCheckbox = () => {
     onUpdate(todo.id);
+  };
+
+  const onClickDelete = () => {
+    onDelete(todo.id);
   };
 
   return (
@@ -20,7 +25,7 @@ const TodoItem = ({ todo, onUpdate }: Props) => {
       />
       <div className="content">{todo.content}</div>
       <div className="date">{new Date(todo.date).toLocaleDateString()}</div>
-      <button>삭제</button>
+      <button onClick={onClickDelete}>삭제</button>
     </div>
   );
 };

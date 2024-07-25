@@ -7,9 +7,10 @@ import { useState } from "react";
 interface Props {
   todos: Todo[];
   onUpdate: (id: number) => void;
+  onDelete: (id: number) => void;
 }
 
-const List = ({ todos, onUpdate }: Props) => {
+const List = ({ todos, onUpdate, onDelete }: Props) => {
   const [search, setSearch] = useState("");
 
   const onChangeSearch = (e: ChangeEvent) => {
@@ -36,7 +37,14 @@ const List = ({ todos, onUpdate }: Props) => {
       />
       <div className="todos_wrapper">
         {filteredTodos.map((todo: Todo) => {
-          return <TodoItem key={todo.id} todo={todo} onUpdate={onUpdate} />;
+          return (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              onUpdate={onUpdate}
+              onDelete={onDelete}
+            />
+          );
         })}
       </div>
     </div>
