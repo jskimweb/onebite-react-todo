@@ -2,7 +2,7 @@ import "./App.css";
 import Header from "./components/Header";
 import Editor from "./components/Editor";
 import List from "./components/List";
-import { useState, useRef } from "react";
+import { useReducer, useRef } from "react";
 
 export interface Todo {
   id: number;
@@ -11,7 +11,17 @@ export interface Todo {
   date: number;
 }
 
-const MOCK_DATA = [
+interface CreateAction {
+  type: string;
+  data: Todo;
+}
+
+interface UpdateAction {
+  type: string;
+  id: number;
+}
+
+const MOCK_DATA: Todo[] = [
   {
     id: 2,
     isDone: false,
@@ -32,31 +42,51 @@ const MOCK_DATA = [
   },
 ];
 
+function reducer(state: Todo[], action: CreateAction | UpdateAction) {
+  switch (action.type) {
+    case "CREATE":
+      return [(action as CreateAction).data, ...state];
+    case "UPDATE":
+      return state.map((todo) =>
+        todo.id === (action as UpdateAction).id
+          ? { ...todo, isDone: !todo.isDone }
+          : todo
+      );
+    case "DELETE":
+      return state.filter((todo) => todo.id !== (action as UpdateAction).id);
+    default:
+      throw new Error("Unknown action: " + action.type);
+  }
+}
+
 function App() {
-  const [todos, setTodos] = useState<Todo[]>(MOCK_DATA);
+  const [todos, dispatch] = useReducer(reducer, MOCK_DATA);
   const id = useRef(3);
 
   const onCreate = (content: string) => {
-    const newTodo = {
-      id: id.current++,
-      isDone: false,
-      content,
-      date: new Date().getTime(),
-    };
-
-    setTodos([newTodo, ...todos]);
+    dispatch({
+      type: "CREATE",
+      data: {
+        id: id.current++,
+        isDone: false,
+        content,
+        date: new Date().getTime(),
+      },
+    });
   };
 
   const onUpdate = (id: number) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, isDone: !todo.isDone } : todo
-      )
-    );
+    dispatch({
+      type: "UPDATE",
+      id,
+    });
   };
 
   const onDelete = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    dispatch({
+      type: "DELETE",
+      id,
+    });
   };
 
   return (
