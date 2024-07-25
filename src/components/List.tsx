@@ -4,7 +4,12 @@ import type { Todo } from "../App";
 import type { ChangeEvent } from "react";
 import { useState } from "react";
 
-const List = ({ todos }: { todos: Todo[] }) => {
+interface Props {
+  todos: Todo[];
+  onUpdate: (id: number) => void;
+}
+
+const List = ({ todos, onUpdate }: Props) => {
   const [search, setSearch] = useState("");
 
   const onChangeSearch = (e: ChangeEvent) => {
@@ -31,7 +36,7 @@ const List = ({ todos }: { todos: Todo[] }) => {
       />
       <div className="todos_wrapper">
         {filteredTodos.map((todo: Todo) => {
-          return <TodoItem key={todo.id} {...todo} />;
+          return <TodoItem key={todo.id} todo={todo} onUpdate={onUpdate} />;
         })}
       </div>
     </div>
