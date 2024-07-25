@@ -4,7 +4,7 @@ import Editor from "./components/Editor";
 import List from "./components/List";
 import { useState, useRef } from "react";
 
-interface Todo {
+export interface Todo {
   id: number;
   isDone: boolean;
   content: string;
@@ -51,7 +51,7 @@ function App() {
     <div className="App">
       <Header />
       <Editor onCreate={onCreate} />
-      <List />
+      <List todos={todos} />
     </div>
   );
 }
