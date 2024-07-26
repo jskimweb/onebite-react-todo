@@ -1,12 +1,10 @@
 import "./Editor.css";
 import type { ChangeEvent, KeyboardEvent } from "react";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
+import { TodoDispatchContext } from "../App";
 
-interface EditorProps {
-  onCreate: (content: string) => void;
-}
-
-const Editor = ({ onCreate }: EditorProps) => {
+const Editor = () => {
+  const { onCreate } = useContext(TodoDispatchContext);
   const [content, setContent] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 

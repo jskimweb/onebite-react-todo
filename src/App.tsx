@@ -2,7 +2,7 @@ import "./App.css";
 import Header from "./components/Header";
 import Editor from "./components/Editor";
 import List from "./components/List";
-import { useCallback, useReducer, useRef } from "react";
+import { createContext, useCallback, useReducer, useRef, useMemo } from "react";
 
 export interface Todo {
   id: number;
@@ -19,6 +19,12 @@ interface CreateAction {
 interface UpdateAction {
   type: string;
   id: number;
+}
+
+interface TodoDispatchContext {
+  onCreate: (content: string) => void;
+  onUpdate: (id: number) => void;
+  onDelete: (id: number) => void;
 }
 
 const MOCK_DATA: Todo[] = [
@@ -59,6 +65,13 @@ function reducer(state: Todo[], action: CreateAction | UpdateAction) {
   }
 }
 
+export const TodoStateContext = createContext<Todo[]>(MOCK_DATA);
+export const TodoDispatchContext = createContext<TodoDispatchContext>({
+  onCreate: () => {},
+  onUpdate: () => {},
+  onDelete: () => {},
+});
+
 function App() {
   const [todos, dispatch] = useReducer(reducer, MOCK_DATA);
   const id = useRef(3);
@@ -89,11 +102,20 @@ function App() {
     });
   }, []);
 
+  const memoizedDispatch = useMemo(
+    () => ({ onCreate, onUpdate, onDelete }),
+    []
+  );
+
   return (
     <div className="App">
       <Header />
-      <Editor onCreate={onCreate} />
-      <List todos={todos} onUpdate={onUpdate} onDelete={onDelete} />
+      <TodoStateContext.Provider value={todos}>
+        <TodoDispatchContext.Provider value={memoizedDispatch}>
+          <Editor />
+          <List />
+        </TodoDispatchContext.Provider>
+      </TodoStateContext.Provider>
     </div>
   );
 }

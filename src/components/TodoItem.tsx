@@ -1,14 +1,11 @@
 import "./TodoItem.css";
+import { memo, useContext } from "react";
+import { TodoDispatchContext } from "../App";
 import type { Todo } from "../App";
-import { memo } from "react";
 
-interface Props {
-  todo: Todo;
-  onUpdate: (id: number) => void;
-  onDelete: (id: number) => void;
-}
+const TodoItem = ({ todo }: { todo: Todo }) => {
+  const { onUpdate, onDelete } = useContext(TodoDispatchContext);
 
-const TodoItem = ({ todo, onUpdate, onDelete }: Props) => {
   const onChangeCheckbox = () => {
     onUpdate(todo.id);
   };
