@@ -2,7 +2,7 @@ import "./App.css";
 import Header from "./components/Header";
 import Editor from "./components/Editor";
 import List from "./components/List";
-import { useReducer, useRef } from "react";
+import { useCallback, useReducer, useRef } from "react";
 
 export interface Todo {
   id: number;
@@ -63,7 +63,7 @@ function App() {
   const [todos, dispatch] = useReducer(reducer, MOCK_DATA);
   const id = useRef(3);
 
-  const onCreate = (content: string) => {
+  const onCreate = useCallback((content: string) => {
     dispatch({
       type: "CREATE",
       data: {
@@ -73,21 +73,21 @@ function App() {
         date: new Date().getTime(),
       },
     });
-  };
+  }, []);
 
-  const onUpdate = (id: number) => {
+  const onUpdate = useCallback((id: number) => {
     dispatch({
       type: "UPDATE",
       id,
     });
-  };
+  }, []);
 
-  const onDelete = (id: number) => {
+  const onDelete = useCallback((id: number) => {
     dispatch({
       type: "DELETE",
       id,
     });
-  };
+  }, []);
 
   return (
     <div className="App">

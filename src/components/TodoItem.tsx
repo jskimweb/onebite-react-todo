@@ -1,5 +1,6 @@
 import "./TodoItem.css";
 import type { Todo } from "../App";
+import { memo } from "react";
 
 interface Props {
   todo: Todo;
@@ -30,4 +31,4 @@ const TodoItem = ({ todo, onUpdate, onDelete }: Props) => {
   );
 };
 
-export default TodoItem;
+export default memo(TodoItem);
